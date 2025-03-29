@@ -1,9 +1,3 @@
-/*
- * Author: Ali Niyazi (Netita)
- * Template Name: vCard 4
- * Version: 1.1.0
-*/
-
 $(document).ready(function() {
 
     'use strict';
