@@ -8,7 +8,6 @@ I am Danial Karimi, a passionate and aspiring developer with a strong interest i
 
 ## 🔧 Technologies & Skills
 - **Front-End**: HTML, CSS, Flexbox, JavaScript (in progress)
-- **Programming**: Python (Learning AI & Machine Learning)
 - **Tools & Platforms**: GitHub Pages, VS Code, W3Schools
 
 ## 🌐 Website URL
@@ -16,7 +15,7 @@ I am Danial Karimi, a passionate and aspiring developer with a strong interest i
 
 ## 📌 Future Goals
 - Master JavaScript & Advanced Front-End Development
-- Dive deeper into AI & Blockchain technologies
+- Dive deeper into AI
 - Work on real-world projects and build innovative solutions
 
-Feel free to explore my site and connect with me! 😊  
+Feel free to explore my site and connect with me! 😊
