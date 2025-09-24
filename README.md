@@ -14,20 +14,19 @@ I’m deeply interested in **Artificial Intelligence**, I love combining code wi
 
 ## 🔧 Technologies & Skills
 
-### 🧠 AI & Data Science (Beginner)
+### 🧠 AI & Data Science
 - Python *(actively learning)*
 - NumPy, Pandas, Matplotlib, sckitlearn
-- 
 ---
 
 ## 🌍 Live Website  
-🔗 [Visit My Website](https://danial-karimi.github.io/Resume/)
+🔗 [Visit My Personal Website](https://danial-karimi.github.io/Resume/)
 
 ---
 
 ## 🎯 Future Goals
 
-- ✔️ Build real AI-powered mini-projects
+- ✔️ Build real AI-powered projects
 - ✔️ Explore Machine Learning and Deep Learning more deeply
 
 ---
