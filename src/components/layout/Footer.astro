@@ -1,0 +1,53 @@
+---
+import BrandMark from './BrandMark.astro';
+import Navigation from './Navigation.astro';
+import SocialLinks from '@/components/ui/SocialLinks.astro';
+import { siteConfig } from '@/data/site';
+import { profile } from '@/data/profile';
+import { currentYearLabel } from '@/utils/format';
+
+const currentPath = Astro.url.pathname;
+const year = currentYearLabel(siteConfig.copyrightCalendar);
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__about">
+        <a class="brand" href={currentPath === '/' ? '#top' : '/'} aria-label={`${siteConfig.name} — صفحه اصلی`}>
+          <BrandMark />
+          <span class="brand__name">{siteConfig.name}</span>
+        </a>
+        <p class="site-footer__blurb">{profile.footerBlurb}</p>
+      </div>
+
+      <Navigation
+        class="site-footer__nav"
+        variant="footer"
+        currentPath={currentPath}
+        label="ناوبری پایین صفحه"
+      />
+
+      <div class="site-footer__contact">
+        <a class="site-footer__email" href={`mailto:${profile.email}`} dir="ltr">{profile.email}</a>
+        <SocialLinks placement="footer" label="شبکه‌های اجتماعی" />
+      </div>
+    </div>
+
+    <p class="site-footer__legal">
+      © <span data-year data-calendar={siteConfig.copyrightCalendar}>{year}</span>{' '}{profile.name}. تمام حقوق محفوظ است.
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Keep the copyright year current even if the site was built in an earlier year.
+  document.querySelectorAll<HTMLElement>('[data-year]').forEach((el) => {
+    try {
+      const calendar = el.dataset.calendar === 'gregory' ? 'gregory' : 'persian';
+      el.textContent = new Intl.DateTimeFormat(`fa-IR-u-ca-${calendar}`, { year: 'numeric' }).format(new Date());
+    } catch {
+      /* keep the build-time value */
+    }
+  });
+</script>

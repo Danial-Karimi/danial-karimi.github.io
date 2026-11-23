@@ -1,0 +1,45 @@
+---
+import Icon from './Icon.astro';
+import { getSocialLinks, type SocialPlacement } from '@/utils/social';
+
+interface Props {
+  placement: SocialPlacement;
+  /** icons: compact round buttons. labeled: icon + platform + handle rows. */
+  variant?: 'icons' | 'labeled';
+  label?: string;
+  class?: string;
+}
+
+const { placement, variant = 'icons', label = 'شبکه‌های اجتماعی', class: className } = Astro.props;
+const links = getSocialLinks(placement);
+---
+
+{
+  links.length > 0 && (
+    <ul class:list={['social', `social--${variant}`, className]} aria-label={label}>
+      {links.map((link) => (
+        <li>
+          <a
+            class="social__link"
+            href={link.url}
+            target="_blank"
+            rel="me noopener noreferrer"
+            aria-label={variant === 'icons' ? link.label : undefined}
+          >
+            <Icon name={link.icon} />
+            {variant === 'labeled' && (
+              <span class="social__text">
+                <span class="social__name">{link.label}</span>
+                {link.handle && (
+                  <span class="social__handle" dir="ltr">
+                    {link.handle}
+                  </span>
+                )}
+              </span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

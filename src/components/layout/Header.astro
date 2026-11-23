@@ -1,0 +1,117 @@
+---
+import BrandMark from './BrandMark.astro';
+import Navigation from './Navigation.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { siteConfig } from '@/data/site';
+import { navItems } from '@/data/navigation';
+import { resolveNavHref } from '@/utils/navigation';
+
+const currentPath = Astro.url.pathname;
+const homeHref = currentPath === '/' ? '#top' : '/';
+const contactItem = navItems.find((item) => item.id === 'contact');
+const contactHref = contactItem ? resolveNavHref(contactItem, currentPath) : '/';
+---
+
+<header class="site-header" data-site-header data-open="false" data-scrolled="false">
+  <div class="container">
+    <div class="site-header__bar glass glass--strong">
+      <a class="brand" href={homeHref} aria-label={`${siteConfig.name} — صفحه اصلی`}>
+        <BrandMark />
+        <span class="brand__name">{siteConfig.name}</span>
+      </a>
+
+      <Navigation variant="bar" currentPath={currentPath} />
+
+      <div class="site-header__end">
+        <Button class="site-header__cta" href={contactHref} variant="secondary" size="sm" icon="mail">
+          تماس با من
+        </Button>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label="باز کردن منو"
+          data-menu-toggle
+        >
+          <Icon class="menu-toggle__open" name="menu" />
+          <Icon class="menu-toggle__close" name="x" />
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="site-header__panel glass glass--strong" data-menu-panel>
+      <Navigation variant="panel" currentPath={currentPath} label="ناوبری موبایل" />
+      <Button href={contactHref} variant="primary" icon="mail" class="site-header__panel-cta">
+        تماس با من
+      </Button>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+
+  if (header) {
+    const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+    const panel = header.querySelector<HTMLElement>('[data-menu-panel]');
+
+    const setOpen = (open: boolean, restoreFocus = false) => {
+      header.dataset.open = String(open);
+      toggle?.setAttribute('aria-expanded', String(open));
+      toggle?.setAttribute('aria-label', open ? 'بستن منو' : 'باز کردن منو');
+      if (!open && restoreFocus) toggle?.focus();
+    };
+
+    toggle?.addEventListener('click', () => setOpen(header.dataset.open !== 'true'));
+    panel?.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && header.dataset.open === 'true') setOpen(false, true);
+    });
+    document.addEventListener('click', (event) => {
+      if (header.dataset.open === 'true' && !header.contains(event.target as Node)) setOpen(false);
+    });
+    window.matchMedia('(min-width: 64rem)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+
+    // Denser glass once the page has scrolled.
+    const onScroll = () => {
+      header.dataset.scrolled = String(window.scrollY > 12);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Mark the nav link of the section currently in view.
+    const links = Array.from(header.querySelectorAll<HTMLAnchorElement>('a[data-nav-link]'));
+    const targets = new Map<Element, string>();
+    for (const link of links) {
+      const href = link.getAttribute('href') ?? '';
+      if (!href.startsWith('#')) continue;
+      const section = document.getElementById(href.slice(1));
+      if (section) targets.set(section, href);
+    }
+
+    if (targets.size > 0 && 'IntersectionObserver' in window) {
+      const setCurrent = (href: string) => {
+        for (const link of links) {
+          if (link.getAttribute('href') === href) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        }
+      };
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const href = targets.get(entry.target);
+            if (entry.isIntersecting && href) setCurrent(href);
+          }
+        },
+        { rootMargin: '-35% 0px -55% 0px' },
+      );
+      targets.forEach((_href, section) => observer.observe(section));
+    }
+  }
+</script>

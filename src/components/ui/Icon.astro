@@ -1,0 +1,38 @@
+---
+import { lucideIcons } from '@/assets/icons/lucide';
+import { brandIcons } from '@/assets/icons/brands';
+import type { IconName } from '@/types/content';
+
+interface Props {
+  name: IconName;
+  class?: string;
+  /** Accessible name. Omit for decorative icons (they are hidden from assistive tech). */
+  label?: string;
+}
+
+const { name, class: className, label } = Astro.props;
+// Brand and Lucide keys must never overlap, otherwise one silently shadows the other.
+const isBrand = name in brandIcons && !(name in lucideIcons);
+const icon = isBrand
+  ? brandIcons[name as keyof typeof brandIcons]
+  : lucideIcons[name as keyof typeof lucideIcons];
+---
+
+{
+  icon && (
+    <svg
+      class:list={['icon', isBrand ? 'icon--brand' : 'icon--line', className]}
+      viewBox={icon.viewBox}
+      fill={isBrand ? 'currentColor' : 'none'}
+      stroke={isBrand ? undefined : 'currentColor'}
+      stroke-width={isBrand ? undefined : '2'}
+      stroke-linecap={isBrand ? undefined : 'round'}
+      stroke-linejoin={isBrand ? undefined : 'round'}
+      aria-hidden={label ? undefined : 'true'}
+      role={label ? 'img' : undefined}
+      aria-label={label}
+      focusable="false"
+      set:html={icon.body}
+    />
+  )
+}

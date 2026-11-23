@@ -1,0 +1,40 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import ActivityVisual from './ActivityVisual.astro';
+import { activities } from '@/data/activities';
+---
+
+<section id="activities" class="section activities" aria-labelledby="activities-title">
+  <div class="container">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <SectionHeading
+      id="activities-title"
+      size="lg"
+      title="حوزه‌هایی که دنبالشان می‌کنم"
+      lede="از مدل‌های یادگیری ماشین تا سرویس‌هایی که آن‌ها را به کار می‌گیرند؛ این‌ها مسیرهایی هستند که هر روز رویشان وقت می‌گذارم."
+    />
+
+    <ul class="activities__grid" role="list">
+      {
+        activities.map((activity, index) => (
+          <li
+            class={`tile tile--${activity.size} tile--${activity.id}`}
+            data-accent={activity.accent}
+            data-reveal
+            style={`--i:${index}`}
+          >
+            <article class:list={['tile__card', activity.size === 'xl' && 'glass glass--r-xl']}>
+              <ActivityVisual kind={activity.visual} />
+              <span class="tile__icon"><Icon name={activity.icon} /></span>
+              <div class="tile__text">
+                <h3 class="tile__title">{activity.title}</h3>
+                <p class="tile__desc">{activity.description}</p>
+              </div>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from '@/types/content';
+
+interface Props {
+  /** Renders an <a> when set, a <button> otherwise. */
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'md' | 'sm';
+  /** Trailing icon. In RTL the default arrow points toward the reading direction. */
+  icon?: IconName | null;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  icon = 'arrow-left',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const isExternal = typeof href === 'string' && /^https?:\/\//.test(href);
+const Tag = (href ? 'a' : 'button') as 'a';
+const linkProps = isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+const buttonProps = href ? {} : { type: 'button' };
+---
+
+<Tag
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  href={href}
+  data-icon={icon ?? undefined}
+  {...linkProps}
+  {...buttonProps}
+  {...rest}
+>
+  <span class="btn__label"><slot /></span>
+  {icon && <span class="btn__icon" aria-hidden="true"><Icon name={icon} /></span>}
+</Tag>

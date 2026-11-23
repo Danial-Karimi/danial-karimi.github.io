@@ -1,0 +1,32 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { education } from '@/data/education';
+
+const hasEntries = education.length > 0;
+---
+
+<section id="education" class="education" aria-labelledby="education-title">
+  <SectionHeading id="education-title" size="md" title="تحصیلات" />
+
+  {
+    hasEntries ? (
+      <ol class="timeline">
+        {education.map((entry) => (
+          <li class="timeline__item">
+            {entry.period && <p class="timeline__period">{entry.period}</p>}
+            <h3 class="timeline__title">{entry.institution}</h3>
+            <p class="timeline__program">{entry.program}</p>
+            {entry.description && <p class="timeline__desc">{entry.description}</p>}
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <div class="empty">
+        <span class="empty__icon"><Icon name="graduation-cap" /></span>
+        <p class="empty__title">اطلاعات تحصیلی هنوز اضافه نشده است.</p>
+        <p class="empty__text">پس از تکمیل، مسیر تحصیلی در همین بخش نمایش داده می‌شود.</p>
+      </div>
+    )
+  }
+</section>

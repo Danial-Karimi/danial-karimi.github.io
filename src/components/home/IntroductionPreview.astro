@@ -1,0 +1,19 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { profile } from '@/data/profile';
+
+const [lead, ...rest] = profile.about.paragraphs;
+---
+
+<section id="about" class="section intro" aria-labelledby="about-title">
+  <div class="container">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <div class="intro__grid">
+      <SectionHeading id="about-title" size="xl" title={profile.about.heading} class="intro__heading" />
+      <p class="intro__lead type-lead">{lead}</p>
+      <div class="intro__body">
+        {rest.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </div>
+  </div>
+</section>

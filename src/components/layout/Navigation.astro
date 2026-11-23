@@ -1,0 +1,35 @@
+---
+import { navItems } from '@/data/navigation';
+import { resolveNavHref } from '@/utils/navigation';
+
+interface Props {
+  variant?: 'bar' | 'panel' | 'footer';
+  /** Path of the page being rendered; decides anchor vs. page links. */
+  currentPath?: string;
+  label?: string;
+  class?: string;
+}
+
+const {
+  variant = 'bar',
+  currentPath = Astro.url.pathname,
+  label = 'ناوبری اصلی',
+  class: className,
+} = Astro.props;
+
+const items = navItems.map((item) => ({ ...item, href: resolveNavHref(item, currentPath) }));
+---
+
+<nav class:list={['nav', `nav--${variant}`, className]} aria-label={label}>
+  <ul class="nav__list">
+    {
+      items.map((item) => (
+        <li>
+          <a class="nav__link" href={item.href} data-nav-link={item.id}>
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

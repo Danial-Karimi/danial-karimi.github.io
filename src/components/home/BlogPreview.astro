@@ -1,0 +1,46 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import PostCard from './PostCard.astro';
+import { getPublishedPosts, pickHomepagePosts } from '@/utils/blog';
+
+const posts = await getPublishedPosts();
+const { featured, recent } = pickHomepagePosts(posts);
+---
+
+<section id="blog" class="blog theme-paper" aria-labelledby="blog-title">
+  <div class="container blog__inner">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <SectionHeading
+      id="blog-title"
+      size="xl"
+      title="نوشته‌ها"
+      lede="یادداشت‌هایی درباره‌ی هوش مصنوعی، مهندسی نرم‌افزار و چیزهایی که در مسیر یادگیری و ساختن به آن‌ها می‌رسم."
+    />
+
+    {
+      featured ? (
+        <div class="blog__layout">
+          <PostCard post={featured} variant="featured" />
+          {recent.length > 0 && (
+            <ul class="blog__recent" role="list" aria-label="آخرین نوشته‌ها">
+              {recent.map((post) => (
+                <li><PostCard post={post} variant="row" /></li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ) : (
+        <div class="blog__empty">
+          <div class="blog__empty-cover" aria-hidden="true">
+            <Icon name="pen-line" />
+          </div>
+          <div class="blog__empty-text">
+            <p class="blog__empty-title">هنوز نوشته‌ای منتشر نشده است.</p>
+            <p>وقتی اولین یادداشت آماده شود، همین‌جا به‌عنوان نوشته‌ی شاخص و همراه با آخرین نوشته‌ها نمایش داده می‌شود.</p>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>

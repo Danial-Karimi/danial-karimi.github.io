@@ -1,0 +1,18 @@
+---
+import type { HTMLTag } from 'astro/types';
+
+interface Props {
+  as?: HTMLTag;
+  /** base: default. strong: denser fill for text-heavy surfaces. quiet: lightest. */
+  variant?: 'base' | 'strong' | 'quiet';
+  radius?: 'md' | 'lg' | 'xl' | 'pill';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { as: Tag = 'div', variant = 'base', radius = 'lg', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['glass', `glass--${variant}`, `glass--r-${radius}`, className]} {...rest}>
+  <slot />
+</Tag>

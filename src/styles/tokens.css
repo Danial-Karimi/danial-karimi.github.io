@@ -1,0 +1,110 @@
+/* ==========================================================================
+   Design tokens — every colour, space, radius and timing used on the site.
+   Raw palette first, then semantic roles. Components only use semantic roles.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* Base — midnight navy → graphite → off-white */
+  --ink-950: #050913;
+  --ink-900: #0a1020;
+  --ink-850: #0d1426;
+  --ink-800: #111a2e;
+  --graphite-700: #1b2438;
+  --graphite-600: #28344f;
+  --mist-100: #e3e8f3;
+  --mist-300: #a9b4cb;
+  --mist-500: #7e8aa6;
+  --paper: #eef0f6;
+  --paper-200: #e2e6f0;
+  --paper-ink: #0b1220;
+  --paper-muted: #46526f;
+
+  /* Accents — each has a job: blue = interaction & AI, violet = learning,
+     cyan = systems & infrastructure, lavender = light & emphasis. */
+  --blue: #3f7cff;
+  --blue-soft: #7ba3ff;
+  --violet: #8a6bff;
+  --violet-soft: #ab94ff;
+  --cyan: #52d6e6;
+  --lavender: #c9bfff;
+
+  /* Semantic roles (re-mapped inside .theme-paper) */
+  --bg: var(--ink-950);
+  --fg: var(--paper);
+  --fg-muted: var(--mist-300);
+  --fg-subtle: var(--mist-500);
+  --line: rgb(255 255 255 / 0.1);
+  --line-strong: rgb(255 255 255 / 0.2);
+  --surface: rgb(255 255 255 / 0.04);
+  --surface-hover: rgb(255 255 255 / 0.09);
+  --accent: var(--blue-soft);
+  --focus: #8fb0ff;
+  --btn-bg: var(--paper);
+  --btn-fg: var(--paper-ink);
+
+  /* Liquid glass */
+  --glass-fill: linear-gradient(160deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.04) 55%, rgb(120 140 255 / 0.06));
+  --glass-fill-strong: linear-gradient(160deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.07) 60%, rgb(120 140 255 / 0.09));
+  --glass-fill-quiet: linear-gradient(160deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.02));
+  --glass-fallback: #162038;
+  --glass-blur: 22px;
+  --glass-shadow:
+    0 30px 60px -30px rgb(0 0 0 / 0.75),
+    0 10px 24px -14px rgb(0 0 0 / 0.55);
+
+  /* Layout */
+  --container: 85rem;
+  --page-pad: clamp(1.25rem, 0.6rem + 3vw, 3rem);
+  --gutter: clamp(1rem, 0.4rem + 2vw, 2rem);
+  --section-space: clamp(4.5rem, 2.5rem + 7vw, 8.5rem);
+
+  /* Radius */
+  --radius-md: 0.875rem;
+  --radius-lg: 1.375rem;
+  --radius-xl: clamp(1.5rem, 1rem + 1.6vw, 2.25rem);
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 160ms;
+  --dur-2: 320ms;
+  --dur-3: 700ms;
+}
+
+/* The one light surface: the editorial "paper" sheet that holds the blog. */
+.theme-paper {
+  color-scheme: light;
+  --bg: var(--paper);
+  --fg: var(--paper-ink);
+  --fg-muted: var(--paper-muted);
+  --fg-subtle: #5a6684;
+  --line: rgb(11 18 32 / 0.14);
+  --line-strong: rgb(11 18 32 / 0.3);
+  --surface: rgb(11 18 32 / 0.04);
+  --surface-hover: rgb(11 18 32 / 0.08);
+  --accent: #2c5bd8;
+  --focus: #2c5bd8;
+  --btn-bg: var(--paper-ink);
+  --btn-fg: var(--paper);
+}
+
+/* Expose the tokens to Tailwind utilities (bg-ink-900, text-fg-muted, …). */
+@theme inline {
+  --color-ink-950: var(--ink-950);
+  --color-ink-900: var(--ink-900);
+  --color-ink-800: var(--ink-800);
+  --color-graphite-700: var(--graphite-700);
+  --color-paper: var(--paper);
+  --color-blue: var(--blue);
+  --color-violet: var(--violet);
+  --color-cyan: var(--cyan);
+  --color-lavender: var(--lavender);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-line: var(--line);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}

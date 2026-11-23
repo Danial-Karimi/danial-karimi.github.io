@@ -1,0 +1,86 @@
+/* ==========================================================================
+   Typography — Vazirmatn (variable) for everything; a system mono stack only for
+   Latin identifiers (email, handles, figure labels).
+   Persian rules: never letter-space, generous line-height, balanced headings.
+   ========================================================================== */
+
+:root {
+  --font-sans: 'Vazirmatn Variable', 'Vazirmatn', 'Noto Sans Arabic', Tahoma, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Scale */
+  --text-display: clamp(4.5rem, 2.6rem + 9.4vw, 12rem);
+  --text-section-xl: clamp(2.5rem, 1.6rem + 3.6vw, 4.75rem);
+  --text-section-lg: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+  --text-section-md: clamp(1.75rem, 1.4rem + 1.4vw, 2.375rem);
+  --text-sub: clamp(1.25rem, 1.1rem + 0.7vw, 1.75rem);
+  --text-lead: clamp(1.125rem, 1.04rem + 0.45vw, 1.4375rem);
+  --text-body: 1.0625rem;
+  --text-caption: 0.9375rem;
+  --text-meta: 0.8125rem;
+
+  /* Line heights (Persian needs more air than Latin) */
+  --lh-display: 1.12;
+  --lh-heading: 1.28;
+  --lh-body: 1.95;
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-kerning: normal;
+}
+
+body {
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: var(--lh-body);
+  letter-spacing: 0;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.type-display {
+  font-size: var(--text-display);
+  font-weight: 900;
+  line-height: var(--lh-display);
+}
+.type-section {
+  font-size: var(--text-section-lg);
+  font-weight: 800;
+  line-height: var(--lh-heading);
+}
+.type-sub {
+  font-size: var(--text-sub);
+  font-weight: 700;
+  line-height: 1.5;
+}
+.type-lead {
+  font-size: var(--text-lead);
+  line-height: 1.95;
+}
+
+/* Latin technical identifiers stay LTR and isolated from the surrounding RTL text. */
+[dir='ltr'] {
+  unicode-bidi: isolate;
+}
+.mono {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: rgb(138 107 255 / 0.45);
+  color: #fff;
+}

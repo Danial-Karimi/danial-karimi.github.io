@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/ui/Icon.astro';
+import { postHref, postReadingMinutes, type BlogPost } from '@/utils/blog';
+import { formatFaDate, formatReadingTime, isoDate } from '@/utils/format';
+
+interface Props {
+  post: BlogPost;
+  variant?: 'featured' | 'row';
+}
+
+const { post, variant = 'row' } = Astro.props;
+const { title, description, category, pubDate, cover, coverAlt } = post.data;
+const href = postHref(post);
+const Wrapper = (href ? 'a' : 'div') as 'a';
+---
+
+<article class:list={['post', `post--${variant}`]}>
+  <Wrapper class="post__link" href={href ?? undefined}>
+    {
+      variant === 'featured' && (
+        <div class="post__cover">
+          {cover ? (
+            <Image src={cover} alt={coverAlt} widths={[480, 800, 1200]} sizes="(min-width: 64rem) 55vw, 100vw" loading="lazy" />
+          ) : (
+            <span class="post__cover-fallback"><Icon name="pen-line" /></span>
+          )}
+        </div>
+      )
+    }
+    <div class="post__text">
+      <p class="post__meta">
+        <span class="post__category">{category}</span>
+        <time datetime={isoDate(pubDate)}>{formatFaDate(pubDate)}</time>
+        <span>{formatReadingTime(postReadingMinutes(post))}</span>
+      </p>
+      <h3 class="post__title">{title}</h3>
+      {variant === 'featured' && <p class="post__excerpt">{description}</p>}
+    </div>
+  </Wrapper>
+</article>

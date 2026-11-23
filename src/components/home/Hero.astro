@@ -1,0 +1,94 @@
+---
+import Button from '@/components/ui/Button.astro';
+import GlassSurface from '@/components/ui/GlassSurface.astro';
+import SocialLinks from '@/components/ui/SocialLinks.astro';
+import { profile } from '@/data/profile';
+import { navHref } from '@/utils/navigation';
+import { createEmbeddingField } from '@/utils/embedding-field';
+
+const path = Astro.url.pathname;
+const aboutHref = navHref('about', path);
+const blogHref = navHref('blog', path);
+
+const field = createEmbeddingField();
+const { lens, neighbours, plot, width, height } = field;
+const xTicks = Array.from({ length: 9 }, (_, i) => Math.round(plot.left + ((plot.right - plot.left) / 8) * i));
+const yTicks = Array.from({ length: 10 }, (_, i) => Math.round(plot.top + ((plot.bottom - plot.top) / 9) * i));
+const calloutStart = { x: lens.cx + lens.r * 0.72, y: lens.cy - lens.r * 0.72 };
+---
+
+<section id="top" class="hero" aria-labelledby="hero-title">
+  <div class="hero__guides" aria-hidden="true">
+    {Array.from({ length: 12 }, () => <span />)}
+  </div>
+
+  <div class="container hero__inner">
+    <h1 id="hero-title" class="hero__name type-display">
+      <span class="word"><span class="word__in">{profile.nameParts[0]}</span></span>{' '}<span class="word"><span class="word__in">{profile.nameParts[1]}</span></span>
+    </h1>
+
+    <div class="hero__body">
+      <div class="hero__copy">
+        <p class="hero__role type-sub">{profile.positioning}</p>
+        <ul class="hero__tags" dir="ltr" lang="en" aria-label="Focus areas">
+          {profile.positioningLatin.map((tag) => <li>{tag}</li>)}
+        </ul>
+        <p class="hero__lede type-lead">{profile.hero.lede}</p>
+
+        <div class="hero__actions">
+          <Button href={aboutHref} variant="primary">درباره من</Button>
+          <Button href={blogHref} variant="secondary" icon="book-open">مشاهده نوشته‌ها</Button>
+        </div>
+
+        <SocialLinks class="hero__social" placement="hero" />
+      </div>
+
+      <figure class="hero__visual">
+        <div class="hero__sheet hero__sheet--back glass glass--quiet glass--r-xl" aria-hidden="true"></div>
+        <GlassSurface class="hero__sheet hero__sheet--front" radius="xl">
+          <svg
+            class="field"
+            viewBox={`0 0 ${width} ${height}`}
+            role="img"
+            aria-label={profile.hero.figureLabel}
+            preserveAspectRatio="xMidYMid meet"
+          >
+            <g class="field__grid">
+              {xTicks.map((x) => <line x1={x} y1={plot.top} x2={x} y2={plot.bottom} />)}
+              {yTicks.map((y) => <line x1={plot.left} y1={y} x2={plot.right} y2={y} />)}
+            </g>
+            <rect class="field__frame" x={plot.left} y={plot.top} width={plot.right - plot.left} height={plot.bottom - plot.top} rx="3" />
+
+            <g class="field__points">
+              <g class="cluster cluster--n">
+                {field.outliers.map((p) => <circle class="pt pt--n" cx={p.x} cy={p.y} r={p.r} opacity={p.o} />)}
+              </g>
+              {field.clusters.map((cluster, index) => (
+                <g class={`cluster cluster--${cluster.id}`} style={`--d:${index * 160 + 500}ms`}>
+                  {cluster.points.map((p) => (
+                    <circle class:list={['pt', `pt--${cluster.id}`, p.focus && 'pt--focus']} cx={p.x} cy={p.y} r={p.r} opacity={p.o} />
+                  ))}
+                </g>
+              ))}
+            </g>
+
+            <g class="lens">
+              <circle class="lens__fill" cx={lens.cx} cy={lens.cy} r={lens.r} />
+              <circle class="lens__ticks" cx={lens.cx} cy={lens.cy} r={lens.r + 9} />
+              <circle class="lens__ring" cx={lens.cx} cy={lens.cy} r={lens.r} />
+              {neighbours.map((n) => <line class="lens__knn" x1={lens.cx} y1={lens.cy} x2={n.x} y2={n.y} />)}
+              <circle class="lens__core" cx={lens.cx} cy={lens.cy} r="3" />
+              <path class="lens__callout" d={`M${calloutStart.x} ${calloutStart.y} L${calloutStart.x + 38} ${calloutStart.y - 38} H${calloutStart.x + 96}`} />
+              <text class="field__label" x={calloutStart.x + 44} y={calloutStart.y - 46}>k-NN, k = 6</text>
+            </g>
+
+            <text class="field__label" x={plot.left} y={plot.top - 12}>latent space</text>
+            <text class="field__label" x={plot.right} y={plot.bottom + 24} text-anchor="end">PC 1</text>
+            <text class="field__label" x={plot.left} y={plot.bottom + 24}>PC 2</text>
+          </svg>
+        </GlassSurface>
+        <figcaption class="hero__caption">{profile.hero.figureCaption}</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>

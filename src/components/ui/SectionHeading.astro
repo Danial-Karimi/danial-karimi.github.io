@@ -1,0 +1,19 @@
+---
+interface Props {
+  title: string;
+  lede?: string;
+  /** id of the heading element, used by aria-labelledby on the parent section. */
+  id?: string;
+  level?: 2 | 3;
+  size?: 'xl' | 'lg' | 'md';
+  class?: string;
+}
+
+const { title, lede, id, level = 2, size = 'lg', class: className } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3';
+---
+
+<header class:list={['section-heading', `section-heading--${size}`, className]}>
+  <Heading id={id} class="section-heading__title">{title}</Heading>
+  {lede && <p class="section-heading__lede">{lede}</p>}
+</header>

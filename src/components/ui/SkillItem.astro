@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+import type { Skill } from '@/types/content';
+
+interface Props {
+  skill: Skill;
+}
+
+const levelLabels = {
+  beginner: 'مقدماتی',
+  intermediate: 'متوسط',
+  advanced: 'پیشرفته',
+} as const;
+
+const { skill } = Astro.props;
+---
+
+<li class="skill">
+  {
+    skill.icon && (
+      <span class="skill__icon">
+        <Icon name={skill.icon} />
+      </span>
+    )
+  }
+  <div class="skill__body">
+    <p class="skill__name"><bdi>{skill.name}</bdi></p>
+    {skill.description && <p class="skill__desc">{skill.description}</p>}
+  </div>
+  {skill.level && <span class="skill__level">{levelLabels[skill.level]}</span>}
+</li>

@@ -1,0 +1,60 @@
+---
+import Button from '@/components/ui/Button.astro';
+import GlassSurface from '@/components/ui/GlassSurface.astro';
+import SocialLinks from '@/components/ui/SocialLinks.astro';
+import { profile } from '@/data/profile';
+
+const mailto = `mailto:${profile.email}`;
+---
+
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="container">
+    <GlassSurface class="contact__panel" radius="xl" variant="strong">
+      <div class="contact__copy">
+        <h2 id="contact-title" class="contact__title">{profile.contact.heading}</h2>
+        <p class="contact__text">{profile.contact.text}</p>
+      </div>
+
+      <div class="contact__actions">
+        <a class="contact__email" href={mailto} dir="ltr">{profile.email}</a>
+        <div class="contact__buttons">
+          <Button href={mailto} icon="mail">ارسال ایمیل</Button>
+          <Button variant="secondary" icon="copy" data-copy-email={profile.email} hidden>کپی ایمیل</Button>
+        </div>
+        <p class="sr-only" role="status" aria-live="polite" data-copy-status></p>
+        <SocialLinks class="contact__social" placement="contact" variant="labeled" />
+      </div>
+    </GlassSurface>
+  </div>
+</section>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-copy-email]');
+  const status = document.querySelector<HTMLElement>('[data-copy-status]');
+
+  if (button && navigator.clipboard) {
+    button.hidden = false;
+    const label = button.querySelector<HTMLElement>('.btn__label');
+    const original = label?.textContent ?? '';
+    let timer: number | undefined;
+
+    const announce = (text: string) => {
+      if (label) label.textContent = text;
+      if (status) status.textContent = text;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        if (label) label.textContent = original;
+        if (status) status.textContent = '';
+      }, 2200);
+    };
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copyEmail ?? '');
+        announce('ایمیل کپی شد');
+      } catch {
+        announce('کپی نشد؛ ایمیل را انتخاب کنید');
+      }
+    });
+  }
+</script>

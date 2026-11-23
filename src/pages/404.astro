@@ -1,0 +1,15 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/ui/Button.astro';
+---
+
+<BaseLayout title="صفحه پیدا نشد | دانیال کریمی" description="صفحه‌ای که دنبال آن بودید وجود ندارد." noindex>
+  <section class="section notfound" aria-labelledby="notfound-title">
+    <div class="container">
+      <p class="notfound__code" dir="ltr" aria-hidden="true">404</p>
+      <h1 id="notfound-title" class="type-section">این صفحه وجود ندارد.</h1>
+      <p class="notfound__text">ممکن است نشانی را اشتباه وارد کرده باشید یا صفحه جابه‌جا شده باشد.</p>
+      <Button href="/">بازگشت به صفحه اصلی</Button>
+    </div>
+  </section>
+</BaseLayout>
