@@ -24,7 +24,7 @@
 }
 
 :root {
-  --font-sans: 'AbarLow', 'Yekan Bakh', Tahoma, system-ui, sans-serif;
+  --font-sans: 'Yekan Bakh', 'AbarLow', Tahoma, system-ui, sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
 
   /* Scale */
