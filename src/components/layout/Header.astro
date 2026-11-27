@@ -87,12 +87,22 @@ const contactHref = contactItem ? resolveNavHref(contactItem, currentPath) : '/'
 
     // Mark the nav link of the section currently in view.
     const links = Array.from(header.querySelectorAll<HTMLAnchorElement>('a[data-nav-link]'));
-    const targets = new Map<Element, string>();
+    // Sections declare the nav item they belong to (data-nav-section="about"), so sub-sections such as
+    // "technologies" keep their parent link highlighted. Sections matching a link's anchor id still work too.
+    const hrefByNavId = new Map<string, string>();
     for (const link of links) {
       const href = link.getAttribute('href') ?? '';
-      if (!href.startsWith('#')) continue;
-      const section = document.getElementById(href.slice(1));
-      if (section) targets.set(section, href);
+      if (href.startsWith('#') && link.dataset.navLink) hrefByNavId.set(link.dataset.navLink, href);
+    }
+    const targets = new Map<Element, string>();
+    document.querySelectorAll<HTMLElement>('[data-nav-section]').forEach((section) => {
+      const href = hrefByNavId.get(section.dataset.navSection ?? '');
+      if (href) targets.set(section, href);
+    });
+    for (const link of links) {
+      const href = link.getAttribute('href') ?? '';
+      const section = href.startsWith('#') ? document.getElementById(href.slice(1)) : null;
+      if (section && !targets.has(section)) targets.set(section, href);
     }
 
     if (targets.size > 0 && 'IntersectionObserver' in window) {

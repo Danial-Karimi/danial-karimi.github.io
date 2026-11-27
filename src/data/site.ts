@@ -23,7 +23,22 @@ export const siteConfig = {
    * start linking to them. Until then they render as plain, non-clickable content.
    */
   features: {
+    /** Legacy switch for an in-repo /blog/<slug>/ page. Ignored while `blog.baseUrl` is set. */
     blogPages: false,
+  },
+  /**
+   * Integration boundary with the future standalone blog (e.g. on a subdomain).
+   * This is the ONLY place the blog URL lives; components never hard-code it.
+   *  - baseUrl: origin (and optional path) of the blog, no trailing slash. Leave '' until the blog exists:
+   *    article cards then render without links and the "open the blog" link is hidden.
+   *  - articlePath: where an article lives under baseUrl. "{slug}" is replaced with the article slug.
+   *    Example: baseUrl 'https://blog.example.com' + '/{slug}/' → https://blog.example.com/my-post/
+   */
+  blog: {
+    baseUrl: '' as string,
+    articlePath: '/{slug}/' as string,
+    /** Maximum number of articles shown in the homepage slider. */
+    homepageLimit: 8,
   },
   /** Calendar used for the footer's copyright year. */
   copyrightCalendar: 'persian' as 'persian' | 'gregory',

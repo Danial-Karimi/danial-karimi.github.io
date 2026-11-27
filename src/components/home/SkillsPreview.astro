@@ -12,27 +12,35 @@ for (const skill of skills) {
 const entries = Array.from(groups.entries());
 ---
 
-<section id="skills" class="skills" aria-labelledby="skills-title">
-  <SectionHeading id="skills-title" size="md" title="مهارت‌ها" />
+<section id="skills" class="section skills" aria-labelledby="skills-title" data-nav-section="skills">
+  <div class="container">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <SectionHeading
+      id="skills-title"
+      size="lg"
+      title="مهارت‌ها"
+      lede="فناوری‌ها و ابزارهایی که در یادگیری و ساختن، با آن‌ها کار می‌کنم."
+    />
 
-  {
-    entries.length > 0 ? (
-      <div class="skill-groups">
-        {entries.map(([category, items]) => (
-          <div class="skill-group">
-            <h3 class="skill-group__title">{category}</h3>
-            <ul class="skill-list" role="list">
-              {items.map((skill) => <SkillItem skill={skill} />)}
-            </ul>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div class="empty">
-        <span class="empty__icon"><Icon name="layers" /></span>
-        <p class="empty__title">مهارت‌ها هنوز اضافه نشده‌اند.</p>
-        <p class="empty__text">پس از تکمیل، مهارت‌ها در همین بخش دسته‌بندی و نمایش داده می‌شوند.</p>
-      </div>
-    )
-  }
+    {
+      entries.length > 0 ? (
+        <div class="skill-groups">
+          {entries.map(([category, items], index) => (
+            <div class="skill-group" data-reveal style={`--i:${index}`}>
+              <h3 class="skill-group__title">{category}</h3>
+              <ul class="skill-list" role="list">
+                {items.map((skill) => <SkillItem skill={skill} />)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="empty">
+          <span class="empty__icon"><Icon name="layers" /></span>
+          <p class="empty__title">مهارت‌ها هنوز اضافه نشده‌اند.</p>
+          <p class="empty__text">پس از تکمیل، مهارت‌ها در همین بخش دسته‌بندی و نمایش داده می‌شوند.</p>
+        </div>
+      )
+    }
+  </div>
 </section>

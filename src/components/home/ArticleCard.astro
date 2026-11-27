@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/ui/Icon.astro';
+import { articleUrl } from '@/utils/blog';
+import { formatFaDate, formatReadingTime, isoDate } from '@/utils/format';
+import type { Article } from '@/types/article';
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const { title, description, category, tags = [], publishedAt, readingTimeMinutes, image } = article;
+const href = articleUrl(article);
+const showReadingTime = typeof readingTimeMinutes === 'number' && readingTimeMinutes > 0;
+---
+
+<article class="article-card">
+  <div class="article-card__cover">
+    {
+      image ? (
+        typeof image.src === 'string' ? (
+          <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" />
+        ) : (
+          <Image src={image.src} alt={image.alt} widths={[400, 640, 960]} sizes="(min-width: 64rem) 28rem, 85vw" loading="lazy" />
+        )
+      ) : (
+        <span class="article-card__cover-fallback" aria-hidden="true"><Icon name="pen-line" /></span>
+      )
+    }
+  </div>
+  <div class="article-card__body">
+    <p class="article-card__meta">
+      {category && <span class="article-card__category">{category}</span>}
+      <time datetime={isoDate(publishedAt)}>{formatFaDate(publishedAt)}</time>
+      {showReadingTime && <span>{formatReadingTime(readingTimeMinutes as number)}</span>}
+    </p>
+    <h3 class="article-card__title">
+      {href ? <a class="article-card__link" href={href}>{title}</a> : title}
+    </h3>
+    <p class="article-card__desc">{description}</p>
+    {
+      tags.length > 0 && (
+        <ul class="article-card__tags" role="list">
+          {tags.map((tag) => <li>{tag}</li>)}
+        </ul>
+      )
+    }
+  </div>
+</article>

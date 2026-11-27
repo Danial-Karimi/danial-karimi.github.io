@@ -1,0 +1,218 @@
+/* ==========================================================================
+   Interactive components: blog slider + article card, FAQ accordion, back-to-top.
+   Hidden-until-JS states only exist under `.js`; reduced motion removes the transitions.
+   ========================================================================== */
+
+/* ---------- Blog slider (native scroll-snap, so swiping works everywhere) ---------- */
+
+.slider { margin-block-start: clamp(2.5rem, 2rem + 2vw, 4.5rem); }
+.slider__bar { display: flex; align-items: center; gap: 1.5rem; margin-block-end: 1.5rem; }
+.slider[data-scrollable='false'] .slider__bar,
+html:not(.js) .slider__bar { display: none; }
+
+.slider__progress { flex: 1; block-size: 2px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.slider__progress span {
+  display: block;
+  block-size: 100%;
+  background: var(--fg);
+  transform: scaleX(max(0.1, var(--progress, 0)));
+  transform-origin: right center; /* fills from the start edge (right) in RTL */
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.slider__buttons { display: flex; gap: 0.5rem; }
+.slider__btn {
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  transition: background-color var(--dur-1) var(--ease-out), opacity var(--dur-2) var(--ease-out);
+}
+.slider__btn:hover:not(:disabled) { background: var(--surface-hover); }
+.slider__btn:disabled { opacity: 0.35; cursor: default; }
+.slider__btn .icon { inline-size: 1.25rem; block-size: 1.25rem; }
+
+.slider__track {
+  display: flex;
+  gap: var(--gutter);
+  margin: 0;
+  padding: 0 0 0.5rem;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.slider__track::-webkit-scrollbar { display: none; }
+.slider__track:focus-visible { outline-offset: 6px; }
+.slide { flex: 0 0 min(85%, 22rem); scroll-snap-align: start; }
+@media (min-width: 48rem) { .slide { flex-basis: calc((100% - var(--gutter)) / 2); } }
+@media (min-width: 64rem) { .slide { flex-basis: calc((100% - var(--gutter) * 2) / 3); } }
+
+/* ---------- Article card ---------- */
+
+.article-card { position: relative; display: flex; flex-direction: column; gap: 1.25rem; block-size: 100%; }
+.article-card:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: 6px; border-radius: var(--radius-lg); }
+.article-card__cover { aspect-ratio: 16 / 10; border-radius: var(--radius-lg); overflow: hidden; background: var(--paper-200); }
+.article-card__cover img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform 600ms var(--ease-out); }
+.article-card__cover-fallback {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--fg-subtle);
+  background: repeating-linear-gradient(135deg, transparent 0 11px, var(--surface) 11px 12px);
+}
+.article-card__cover-fallback .icon { inline-size: 2.25rem; block-size: 2.25rem; stroke-width: 1.25; }
+@media (hover: hover) { .article-card:hover .article-card__cover img { transform: scale(1.04); } }
+
+.article-card__body { display: flex; flex: 1; flex-direction: column; }
+.article-card__meta { display: flex; flex-wrap: wrap; gap: 0.1rem 1rem; color: var(--fg-subtle); font-size: var(--text-meta); line-height: 1.9; }
+.article-card__category { color: var(--accent); font-weight: 700; }
+.article-card__title { margin-block-start: 0.35rem; font-size: 1.3125rem; font-weight: 800; line-height: 1.5; }
+.article-card__link { color: inherit; text-decoration: none; }
+.article-card__link:focus-visible { outline: none; }
+.article-card__link::after { content: ''; position: absolute; inset: 0; } /* whole card is the click target */
+@media (hover: hover) { .article-card:hover .article-card__link { color: var(--accent); } }
+.article-card__desc {
+  display: -webkit-box;
+  margin-block-start: 0.6rem;
+  color: var(--fg-muted);
+  font-size: var(--text-caption);
+  line-height: 1.9;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.article-card__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: auto 0 0; padding: 1rem 0 0; list-style: none; }
+.article-card__tags li { padding: 0.05rem 0.75rem; border: 1px solid var(--line-strong); border-radius: var(--radius-pill); color: var(--fg-muted); font-size: var(--text-meta); }
+
+/* ---------- FAQ accordion ---------- */
+
+.faq__grid { display: grid; gap: clamp(2rem, 1.5rem + 2vw, 3.5rem) var(--gutter); }
+.faq__list { display: grid; gap: 0.75rem; min-inline-size: 0; }
+
+.faq__item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  transition: background-color 400ms var(--ease-out), border-color 400ms var(--ease-out), box-shadow 400ms var(--ease-out);
+}
+.faq__item[data-open='true'] {
+  border-color: rgb(255 255 255 / 0.17);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.025));
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), 0 24px 44px -30px rgb(0 0 0 / 0.85);
+}
+@media (hover: hover) { .faq__item[data-open='false']:hover { border-color: var(--line-strong); } }
+
+.faq__q { margin: 0; }
+.faq__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  inline-size: 100%;
+  min-block-size: 4rem;
+  padding: 1rem;
+  padding-inline: 1.25rem 1rem;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: var(--fg);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.faq__q-text { font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem); font-weight: 700; line-height: 1.6; }
+.faq__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  transition: transform 450ms var(--ease-out), background-color 300ms var(--ease-out);
+}
+.faq__icon .icon { inline-size: 1.125rem; block-size: 1.125rem; }
+.faq__item[data-open='true'] .faq__icon { transform: rotate(45deg); background: var(--surface-hover); }
+
+/* Height animation without measuring: grid row 0fr → 1fr. */
+.faq__a {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 500ms var(--ease-out), visibility 0s linear 500ms;
+}
+.faq__item[data-open='true'] .faq__a { grid-template-rows: 1fr; visibility: visible; transition-delay: 0s; }
+.faq__a-inner { min-block-size: 0; overflow: hidden; }
+.faq__a-inner p {
+  max-inline-size: 40rem;
+  padding: 0 1.25rem 1.5rem;
+  color: var(--fg-muted);
+  line-height: 2;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 400ms var(--ease-out), transform 500ms var(--ease-out);
+}
+.faq__item[data-open='true'] .faq__a-inner p { opacity: 1; transform: none; transition-delay: 90ms; }
+
+/* Without JS every answer is simply shown. */
+html:not(.js) .faq__a { grid-template-rows: 1fr; visibility: visible; }
+html:not(.js) .faq__a-inner p { opacity: 1; transform: none; }
+html:not(.js) .faq__icon { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .faq__item, .faq__icon, .faq__a, .faq__a-inner p, .slider__progress span { transition: none; }
+}
+
+@media (min-width: 64rem) {
+  .faq__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: start; }
+  .faq__heading { grid-column: 1 / span 4; position: sticky; inset-block-start: 7rem; }
+  .faq__list { grid-column: 6 / span 7; }
+}
+
+/* ---------- Back to top ---------- */
+
+.to-top {
+  position: fixed;
+  inset-inline-end: clamp(1rem, 0.5rem + 2vw, 2rem);
+  inset-block-end: calc(clamp(1rem, 0.5rem + 2vw, 2rem) + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  inline-size: 3.25rem;
+  block-size: 3.25rem;
+  color: var(--paper);
+  text-decoration: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.92);
+  transition:
+    opacity 350ms var(--ease-out),
+    transform 350ms var(--ease-out),
+    visibility 0s linear 350ms;
+}
+.to-top[data-visible='true'] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.to-top .icon { position: relative; inline-size: 1.25rem; block-size: 1.25rem; transition: transform var(--dur-2) var(--ease-out); }
+@media (hover: hover) { .to-top:hover .icon { transform: translateY(-2px); } }
+.to-top__ring { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; transform: rotate(-90deg); pointer-events: none; }
+.to-top__track { fill: none; stroke: rgb(255 255 255 / 0.12); stroke-width: 2; }
+.to-top__progress {
+  fill: none;
+  stroke: var(--lavender);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 131.95;
+  stroke-dashoffset: calc(131.95 * (1 - var(--progress, 0)));
+}
+html:not(.js) .to-top { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .to-top { transform: none; transition: opacity 1ms linear, visibility 0s; }
+}

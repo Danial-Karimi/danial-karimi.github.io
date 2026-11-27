@@ -1,18 +1,9 @@
-
 /* ==========================================================================
    Typography — Yekan Bakh
    Primary font: Yekan Bakh
-   Latin technical identifiers: System monospace
-   Persian rules: no letter spacing, generous line height.
+   a system mono stack only for Latin identifiers (email, handles, figure labels).
+   Persian rules: never letter-space, generous line-height, balanced headings.
    ========================================================================== */
-
-@font-face {
-  font-family: 'AbarLow';
-  src: url('/fonts/AbarLow-Regular.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
 
 /* Font Face */
 @font-face {
@@ -24,11 +15,11 @@
 }
 
 :root {
-  --font-sans: 'AbarLow', 'Yekan Bakh', Tahoma, system-ui, sans-serif;
+  --font-sans: 'Yekan Bakh', 'Vazirmatn Variable', 'Vazirmatn', 'Noto Sans Arabic', Tahoma, system-ui, sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
 
   /* Scale */
-  --text-display: clamp(4.5rem, 2.6rem + 9.4vw, 12rem);
+  --text-display: clamp(4.5rem, 2.6rem + 9.4vw, 8rem);
   --text-section-xl: clamp(2.5rem, 1.6rem + 3.6vw, 4.75rem);
   --text-section-lg: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
   --text-section-md: clamp(1.75rem, 1.4rem + 1.4vw, 2.375rem);
@@ -38,10 +29,15 @@
   --text-caption: 0.9375rem;
   --text-meta: 0.8125rem;
 
-  /* Line heights */
+  /* Line heights (Persian needs more air than Latin) */
   --lh-display: 1.12;
   --lh-heading: 1.28;
   --lh-body: 1.95;
+}
+
+/* On desktop the name is limited by viewport height as well as width, so the hero always fits the screen. */
+@media (min-width: 64rem) {
+  :root { --text-display: clamp(5rem, min(8.2vw, 16svh), 10.5rem); }
 }
 
 html {
@@ -54,7 +50,6 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
   font-size: var(--text-body);
   font-weight: 400;
   line-height: var(--lh-body);
@@ -77,29 +72,25 @@ p {
   font-weight: 900;
   line-height: var(--lh-display);
 }
-
 .type-section {
   font-size: var(--text-section-lg);
   font-weight: 800;
   line-height: var(--lh-heading);
 }
-
 .type-sub {
   font-size: var(--text-sub);
   font-weight: 700;
   line-height: 1.5;
 }
-
 .type-lead {
   font-size: var(--text-lead);
   line-height: 1.95;
 }
 
-/* Latin technical identifiers */
+/* Latin technical identifiers stay LTR and isolated from the surrounding RTL text. */
 [dir='ltr'] {
   unicode-bidi: isolate;
 }
-
 .mono {
   font-family: var(--font-mono);
 }

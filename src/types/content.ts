@@ -60,3 +60,35 @@ export interface Skill {
   /** Optional. Shown as a plain text label — never as a bar or percentage. */
   level?: SkillLevel;
 }
+
+export interface Technology {
+  id: string;
+  /** Latin brand name shown next to the logo. */
+  name: string;
+  /** Monochrome brand mark from src/assets/icons/brands.ts. */
+  icon: BrandName;
+}
+
+export interface JourneyStage {
+  id: string;
+  title: string;
+  /** Latin label, shown as a small technical caption. */
+  label: string;
+  description: string;
+}
+
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  tags?: string[];
+  /** Only real, verified URLs. Leave undefined to hide the link. */
+  liveUrl?: string;
+  repoUrl?: string;
+}

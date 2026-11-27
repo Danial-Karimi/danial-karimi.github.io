@@ -1,0 +1,148 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { technologies } from '@/data/technologies';
+---
+
+<section id="technologies" class="tech" aria-labelledby="technologies-title" data-nav-section="about">
+  <div class="container">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <SectionHeading
+      id="technologies-title"
+      size="md"
+      title="فناوری‌هایی که با آن‌ها کار می‌کنم"
+      lede="ابزارها و کتابخانه‌هایی که در یادگیری و ساختن، هر روز سراغشان می‌روم."
+    />
+  </div>
+
+  <div class="tech__band">
+    <div
+      class="tech__viewport"
+      data-tech-marquee
+      tabindex="0"
+      role="region"
+      aria-label="فهرست فناوری‌ها؛ با کشیدن یا کلیدهای جهت‌دار حرکت دهید"
+    >
+      <ul class="tech__track" role="list">
+        {
+          technologies.map((tech) => (
+            <li class="tech__item">
+              <Icon name={tech.icon} />
+              <span class="tech__name" dir="ltr">{tech.name}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <ul class="tech__track tech__track--clone" role="presentation" aria-hidden="true">
+        {
+          technologies.map((tech) => (
+            <li class="tech__item">
+              <Icon name={tech.icon} />
+              <span class="tech__name" dir="ltr">{tech.name}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  /**
+   * The marquee is a normal horizontally scrolling region (so touch swiping, trackpads and arrow keys work)
+   * that drifts slowly by itself. The second list is an identical copy that makes the loop seamless.
+   * Autoplay stops on hover, focus, touch and while the user scrolls, never runs offscreen, and is
+   * disabled entirely under prefers-reduced-motion.
+   */
+  document.querySelectorAll<HTMLElement>('[data-tech-marquee]').forEach((viewport) => {
+    const firstTrack = viewport.querySelector<HTMLElement>('.tech__track');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!firstTrack) return;
+
+    const rtl = getComputedStyle(viewport).direction === 'rtl';
+    const SPEED = 34; // px per second
+    let position = 0; // magnitude of the scroll offset, kept as a float
+    let last = 0;
+    let frame = 0;
+    let hovering = false;
+    let focused = false;
+    let touching = false;
+    let visible = true;
+    let resumeAt = 0;
+
+    const read = () => Math.abs(viewport.scrollLeft);
+    const write = (value: number) => {
+      viewport.scrollLeft = rtl ? -value : value;
+    };
+    const loopWidth = () => firstTrack.offsetWidth;
+
+    const tick = (now: number) => {
+      frame = requestAnimationFrame(tick);
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      const idle = !hovering && !focused && !touching && visible && now >= resumeAt && !reduceMotion.matches;
+      if (!idle) {
+        position = read();
+        return;
+      }
+      position += SPEED * dt;
+      const width = loopWidth();
+      if (width > 0 && position >= width) position -= width;
+      write(position);
+    };
+
+    const start = () => {
+      if (frame || reduceMotion.matches) return;
+      last = performance.now();
+      position = read();
+      frame = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    // The user moved the scroller themselves: pause for a moment and keep the loop seamless.
+    viewport.addEventListener(
+      'scroll',
+      () => {
+        const actual = read();
+        if (Math.abs(actual - position) > 2) {
+          resumeAt = performance.now() + 2500;
+          const width = loopWidth();
+          if (width > 0 && actual >= width) write(actual - width);
+        }
+      },
+      { passive: true },
+    );
+
+    viewport.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'mouse') hovering = true;
+    });
+    viewport.addEventListener('pointerleave', () => {
+      hovering = false;
+    });
+    viewport.addEventListener('focusin', () => {
+      focused = true;
+    });
+    viewport.addEventListener('focusout', () => {
+      focused = false;
+    });
+    viewport.addEventListener('touchstart', () => {
+      touching = true;
+    }, { passive: true });
+    viewport.addEventListener('touchend', () => {
+      touching = false;
+      resumeAt = performance.now() + 2500;
+    }, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        visible = entries.some((entry) => entry.isIntersecting);
+      }).observe(viewport);
+    }
+
+    reduceMotion.addEventListener('change', () => (reduceMotion.matches ? stop() : start()));
+    start();
+  });
+</script>

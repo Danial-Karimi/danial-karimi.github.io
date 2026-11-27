@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+---
+
+<a class="to-top glass glass--strong glass--r-pill" href="#top" aria-label="بازگشت به بالای صفحه" data-to-top data-visible="false">
+  <svg class="to-top__ring" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+    <circle class="to-top__track" cx="24" cy="24" r="21"></circle>
+    <circle class="to-top__progress" cx="24" cy="24" r="21"></circle>
+  </svg>
+  <Icon name="arrow-up" />
+</a>
+
+<script>
+  const button = document.querySelector<HTMLAnchorElement>('[data-to-top]');
+  const top = document.getElementById('top');
+
+  if (button && !top) {
+    // Pages without a #top anchor (e.g. the 404 page) simply don't get the button.
+    button.remove();
+  } else if (button && top) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      button.dataset.visible = String(y > window.innerHeight * 0.7);
+      button.style.setProperty('--progress', String(max > 0 ? Math.min(1, y / max) : 0));
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      history.replaceState(null, '', `${location.pathname}#top`);
+      // Keyboard users: move focus to the top of the page so it is not lost when the button hides.
+      top.setAttribute('tabindex', '-1');
+      top.focus({ preventScroll: true });
+    });
+  }
+</script>

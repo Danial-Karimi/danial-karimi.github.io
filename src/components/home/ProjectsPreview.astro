@@ -1,0 +1,60 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { projects } from '@/data/projects';
+
+const hasProjects = projects.length > 0;
+---
+
+<section id="projects" class="section section--compact projects" aria-labelledby="projects-title" data-nav-section="projects">
+  <div class="container">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <div class="projects__grid">
+      <SectionHeading
+        id="projects-title"
+        size="lg"
+        title="پروژه‌ها"
+        lede="پروژه‌هایی که آماده‌ی نمایش عمومی باشند، در همین بخش قرار می‌گیرند."
+        class="projects__heading"
+      />
+
+      {
+        hasProjects ? (
+          <ul class="project-list" role="list">
+            {projects.map((project) => (
+              <li class="project">
+                <h3 class="project__title">{project.title}</h3>
+                <p class="project__desc">{project.description}</p>
+                {project.tags && project.tags.length > 0 && (
+                  <ul class="project__tags" role="list">
+                    {project.tags.map((tag) => <li dir="auto">{tag}</li>)}
+                  </ul>
+                )}
+                {(project.repoUrl || project.liveUrl) && (
+                  <p class="project__links">
+                    {project.repoUrl && (
+                      <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
+                        کد پروژه <Icon name="external-link" />
+                      </a>
+                    )}
+                    {project.liveUrl && (
+                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                        مشاهده‌ی پروژه <Icon name="external-link" />
+                      </a>
+                    )}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="empty empty--wide">
+            <span class="empty__icon"><Icon name="folder-open" /></span>
+            <p class="empty__title">هنوز پروژه‌ای برای نمایش عمومی منتشر نشده است.</p>
+            <p class="empty__text">این بخش آماده‌ی دریافت پروژه‌هاست و پس از نهایی‌شدن اولین پروژه‌ها تکمیل می‌شود.</p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

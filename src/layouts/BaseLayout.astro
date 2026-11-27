@@ -3,6 +3,7 @@ import '@fontsource-variable/vazirmatn';
 import '@/styles/global.css';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import BackToTop from '@/components/ui/BackToTop.astro';
 import { siteConfig } from '@/data/site';
 import { absoluteUrl, personJsonLd, websiteJsonLd, serializeJsonLd } from '@/utils/seo';
 
@@ -76,6 +77,7 @@ const schemas = [...(identity ? [personJsonLd(), websiteJsonLd()] : []), ...json
       <slot />
     </main>
     <Footer />
+    <BackToTop />
     <script>
       import '@/scripts/reveal';
     </script>

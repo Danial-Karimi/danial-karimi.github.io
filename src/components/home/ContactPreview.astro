@@ -2,17 +2,30 @@
 import Button from '@/components/ui/Button.astro';
 import GlassSurface from '@/components/ui/GlassSurface.astro';
 import SocialLinks from '@/components/ui/SocialLinks.astro';
+import Icon from '@/components/ui/Icon.astro';
 import { profile } from '@/data/profile';
 
 const mailto = `mailto:${profile.email}`;
 ---
 
-<section id="contact" class="section contact" aria-labelledby="contact-title">
+<section id="contact" class="section contact" aria-labelledby="contact-title" data-nav-section="contact">
   <div class="container">
     <GlassSurface class="contact__panel" radius="xl" variant="strong">
       <div class="contact__copy">
         <h2 id="contact-title" class="contact__title">{profile.contact.heading}</h2>
         <p class="contact__text">{profile.contact.text}</p>
+
+        <p class="contact__topics-title">{profile.contact.topicsTitle}</p>
+        <ul class="contact__topics" role="list">
+          {
+            profile.contact.topics.map((topic) => (
+              <li>
+                <span class="contact__tick" aria-hidden="true"><Icon name="check" /></span>
+                {topic}
+              </li>
+            ))
+          }
+        </ul>
       </div>
 
       <div class="contact__actions">

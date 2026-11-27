@@ -10,7 +10,8 @@ export const navItems: NavItem[] = [
   { id: 'activities', label: 'فعالیت‌ها', page: '/activities/', anchor: '#activities' },
   { id: 'education', label: 'تحصیلات', page: '/education/', anchor: '#education' },
   { id: 'skills', label: 'مهارت‌ها', page: '/skills/', anchor: '#skills' },
-  { id: 'blog', label: 'نوشته‌ها', page: '/blog/', anchor: '#blog' },
+  { id: 'projects', label: 'پروژه‌ها', page: '/projects/', anchor: '#projects' },
+  { id: 'blog', label: 'بلاگ', page: '/blog/', anchor: '#blog' },
   { id: 'contact', label: 'تماس', page: '/contact/', anchor: '#contact' },
 ];
 

@@ -2,28 +2,27 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/home/Hero.astro';
 import IntroductionPreview from '@/components/home/IntroductionPreview.astro';
+import TechnologiesMarquee from '@/components/home/TechnologiesMarquee.astro';
 import ActivitiesPreview from '@/components/home/ActivitiesPreview.astro';
+import JourneySection from '@/components/home/JourneySection.astro';
 import EducationPreview from '@/components/home/EducationPreview.astro';
 import SkillsPreview from '@/components/home/SkillsPreview.astro';
+import ProjectsPreview from '@/components/home/ProjectsPreview.astro';
 import BlogPreview from '@/components/home/BlogPreview.astro';
+import FaqSection from '@/components/home/FaqSection.astro';
 import ContactPreview from '@/components/home/ContactPreview.astro';
 ---
 
 <BaseLayout>
   <Hero />
   <IntroductionPreview />
+  <TechnologiesMarquee />
   <ActivitiesPreview />
-
-  <div class="section duo">
-    <div class="container">
-      <div class="rule" data-reveal-rule aria-hidden="true"></div>
-      <div class="duo__grid">
-        <EducationPreview />
-        <SkillsPreview />
-      </div>
-    </div>
-  </div>
-
+  <JourneySection />
+  <EducationPreview />
+  <SkillsPreview />
+  <ProjectsPreview />
   <BlogPreview />
+  <FaqSection />
   <ContactPreview />
 </BaseLayout>

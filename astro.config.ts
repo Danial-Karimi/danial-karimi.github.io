@@ -12,6 +12,7 @@ export default defineConfig({
   compressHTML: true,
   integrations: [sitemap()],
   vite: {
-    plugins: [tailwindcss()],
+    // Types-only mismatch: Astro and @tailwindcss/vite ship different copies of Vite's types.
+    plugins: [tailwindcss() as any],
   },
 });

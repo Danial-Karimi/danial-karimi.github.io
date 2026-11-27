@@ -1,0 +1,76 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { faqIntro, faqItems } from '@/data/faq';
+---
+
+<section id="faq" class="section faq" aria-labelledby="faq-title" data-nav-section="contact">
+  <div class="container">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <div class="faq__grid">
+      <SectionHeading id="faq-title" size="lg" title={faqIntro.title} lede={faqIntro.subtitle} class="faq__heading" />
+
+      <div class="faq__list" data-faq>
+        {
+          faqItems.map((item, index) => {
+            const open = index === 0;
+            return (
+              <div class="faq__item" data-open={open ? 'true' : 'false'}>
+                <h3 class="faq__q">
+                  <button
+                    class="faq__trigger"
+                    type="button"
+                    id={`faq-q-${item.id}`}
+                    aria-expanded={open ? 'true' : 'false'}
+                    aria-controls={`faq-a-${item.id}`}
+                  >
+                    <span class="faq__q-text">{item.question}</span>
+                    <span class="faq__icon" aria-hidden="true"><Icon name="plus" /></span>
+                  </button>
+                </h3>
+                <div class="faq__a" id={`faq-a-${item.id}`} role="region" aria-labelledby={`faq-q-${item.id}`}>
+                  <div class="faq__a-inner">
+                    <p>{item.answer}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-faq]').forEach((root) => {
+    const triggers = Array.from(root.querySelectorAll<HTMLButtonElement>('.faq__trigger'));
+
+    root.addEventListener('click', (event) => {
+      const trigger = (event.target as HTMLElement).closest<HTMLButtonElement>('.faq__trigger');
+      const item = trigger?.closest<HTMLElement>('.faq__item');
+      if (!trigger || !item) return;
+      const open = item.dataset.open !== 'true';
+      item.dataset.open = String(open);
+      trigger.setAttribute('aria-expanded', String(open));
+    });
+
+    // WAI-ARIA accordion keyboard pattern: ↑ ↓ Home End move between questions (Enter/Space toggle natively).
+    root.addEventListener('keydown', (event) => {
+      const current = (event.target as HTMLElement).closest<HTMLButtonElement>('.faq__trigger');
+      if (!current) return;
+      const index = triggers.indexOf(current);
+      const last = triggers.length - 1;
+      const target =
+        event.key === 'ArrowDown' ? (index + 1) % triggers.length
+        : event.key === 'ArrowUp' ? (index - 1 + triggers.length) % triggers.length
+        : event.key === 'Home' ? 0
+        : event.key === 'End' ? last
+        : -1;
+      if (target >= 0) {
+        event.preventDefault();
+        triggers[target]?.focus();
+      }
+    });
+  });
+</script>

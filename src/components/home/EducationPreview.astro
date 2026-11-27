@@ -6,27 +6,45 @@ import { education } from '@/data/education';
 const hasEntries = education.length > 0;
 ---
 
-<section id="education" class="education" aria-labelledby="education-title">
-  <SectionHeading id="education-title" size="md" title="تحصیلات" />
+<section id="education" class="section section--compact education" aria-labelledby="education-title" data-nav-section="education">
+  <div class="container">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <div class="education__grid">
+      <SectionHeading id="education-title" size="lg" title="تحصیلات" class="education__heading" />
 
-  {
-    hasEntries ? (
-      <ol class="timeline">
-        {education.map((entry) => (
-          <li class="timeline__item">
-            {entry.period && <p class="timeline__period">{entry.period}</p>}
-            <h3 class="timeline__title">{entry.institution}</h3>
-            <p class="timeline__program">{entry.program}</p>
-            {entry.description && <p class="timeline__desc">{entry.description}</p>}
-          </li>
-        ))}
-      </ol>
-    ) : (
-      <div class="empty">
-        <span class="empty__icon"><Icon name="graduation-cap" /></span>
-        <p class="empty__title">اطلاعات تحصیلی هنوز اضافه نشده است.</p>
-        <p class="empty__text">پس از تکمیل، مسیر تحصیلی در همین بخش نمایش داده می‌شود.</p>
-      </div>
-    )
-  }
+      {
+        hasEntries ? (
+          <ul class="credentials" role="list">
+            {education.map((entry) => (
+              <li class="credential">
+                <span class="credential__icon"><Icon name="graduation-cap" /></span>
+                <div class="credential__body">
+                  <h3 class="credential__institution">{entry.institution}</h3>
+                  <dl class="credential__facts">
+                    <div>
+                      <dt>رشته‌ی تحصیلی</dt>
+                      <dd>{entry.program}</dd>
+                    </div>
+                    {entry.period && (
+                      <div>
+                        <dt>دوره</dt>
+                        <dd>{entry.period}</dd>
+                      </div>
+                    )}
+                  </dl>
+                  {entry.description && <p class="credential__desc">{entry.description}</p>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="empty">
+            <span class="empty__icon"><Icon name="graduation-cap" /></span>
+            <p class="empty__title">اطلاعات تحصیلی هنوز اضافه نشده است.</p>
+            <p class="empty__text">پس از تکمیل، مسیر تحصیلی در همین بخش نمایش داده می‌شود.</p>
+          </div>
+        )
+      }
+    </div>
+  </div>
 </section>

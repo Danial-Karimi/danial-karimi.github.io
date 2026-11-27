@@ -223,19 +223,18 @@ html:not(.js) .site-header__panel {
     border-radius: 2px;
     background: var(--lavender);
   }
-  .site-header .site-header__cta { display: inline-flex; }
   .menu-toggle { display: none; }
   .site-header__panel { display: none; }
 }
 
+/* Eight nav items: tight padding on small laptops; the CTA (a duplicate of "تماس") only shows when there is room. */
 @media (min-width: 64rem) and (max-width: 79.99rem) {
-  .nav--bar .nav__link { padding-inline: 0.55rem; font-size: 0.875rem; }
-  .site-header .site-header__cta .btn__icon { display: none; }
-  .site-header .site-header__cta { padding-inline: 1.1rem; }
+  .nav--bar .nav__link { padding-inline: 0.5rem; font-size: 0.875rem; }
 }
 
 @media (min-width: 80rem) {
-  .nav--bar .nav__link { padding-inline: 0.95rem; }
+  .nav--bar .nav__link { padding-inline: 0.8rem; }
+  .site-header .site-header__cta { display: inline-flex; }
 }
 
 /* ---------- Footer ---------- */

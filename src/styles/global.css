@@ -6,4 +6,6 @@
 @import "./layout.css";
 @import "./components.css";
 @import "./sections.css";
+@import "./content-sections.css";
+@import "./interactive.css";
 @import "./animations.css";

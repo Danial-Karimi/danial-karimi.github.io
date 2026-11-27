@@ -3,11 +3,18 @@
    ========================================================================== */
 
 /* ---------- Hero ---------- */
+/*
+ * Layout contract (fixes the oversized-figure / overlapping-name problem):
+ *  - ONE grid: copy column (name + role + lede + actions) and figure column. No element overlaps another.
+ *  - The figure's width is min(column, 30rem, available viewport height × 480/560) and its
+ *    aspect-ratio never changes, so it can never grow taller than the screen.
+ *  - Below 64rem everything stacks; the figure is capped to a modest size and never full-bleed.
+ */
 
 .hero {
   position: relative;
   isolation: isolate;
-  padding-block: clamp(1.5rem, 0.5rem + 3vw, 3.5rem) clamp(4.5rem, 3rem + 6vw, 8.5rem);
+  padding-block: clamp(1.5rem, 0.5rem + 3vw, 3rem) clamp(3.5rem, 2.5rem + 5vw, 6.5rem);
   overflow-x: clip;
 }
 
@@ -44,23 +51,24 @@
 .hero__guides span { border-inline: 1px solid rgb(255 255 255 / 0.05); }
 .hero__guides span:nth-child(n + 5) { display: none; }
 
+.hero__inner {
+  display: grid;
+  gap: clamp(2.5rem, 2rem + 3vw, 3.5rem);
+  inline-size: 100%;
+}
+.hero__copy { min-inline-size: 0; }
+
 .hero__name { font-weight: 900; }
 .word { display: block; overflow: clip; padding-block: 0.16em; margin-block: -0.16em; }
 .word__in { display: inline-block; }
 
-.hero__body {
-  display: grid;
-  gap: clamp(2.75rem, 2rem + 3vw, 4rem);
-  margin-block-start: clamp(1.75rem, 1rem + 2vw, 3rem);
-}
-
-.hero__role { color: var(--fg); font-weight: 700; }
+.hero__role { margin-block-start: clamp(1.25rem, 0.8rem + 1.4vw, 1.75rem); color: var(--fg); font-weight: 700; }
 .hero__tags {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end; /* the list is dir=ltr; flex-end is the RTL start edge */
   gap: 0.15rem 1.5rem; /* no separators: the row wraps at some widths */
-  margin: 0.85rem 0 0;
+  margin: 0.75rem 0 0;
   padding: 0;
   list-style: none;
   font-family: var(--font-mono);
@@ -68,15 +76,23 @@
   line-height: 1.8;
   color: var(--fg-subtle);
 }
-.hero__lede { max-inline-size: 34rem; margin-block-start: 1.75rem; color: var(--fg-muted); }
-.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-block-start: 2.25rem; }
-.hero__social { margin-block-start: 2rem; }
+.hero__lede { max-inline-size: 40rem; margin-block-start: 1.25rem; color: var(--fg-muted); }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-block-start: 1.75rem; }
+.hero__social { margin-block-start: 1.5rem; }
 
-.hero__visual { position: relative; width: 100%; max-inline-size: 30rem; margin: 0; }
+.hero__visual {
+  position: relative;
+  margin: 0;
+  justify-self: center;
+  inline-size: min(100%, 19rem);
+}
 .hero__sheet--front { aspect-ratio: 480 / 560; overflow: hidden; }
 .hero__sheet--back {
+  /* Sized like the front plate (not the whole <figure>, which also holds the caption). */
   position: absolute;
-  inset: 0;
+  inset-block-start: 0;
+  inset-inline: 0;
+  aspect-ratio: 480 / 560;
   z-index: -1;
   opacity: 0.8;
   transform: translate(0.9rem, -0.9rem);
@@ -105,31 +121,30 @@
 }
 
 @media (min-width: 40rem) {
-  .hero__visual { justify-self: end; }
+  .hero__visual { justify-self: end; inline-size: min(100%, 23rem); }
   .hero__guides { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .hero__guides span:nth-child(n + 5) { display: block; }
   .hero__guides span:nth-child(n + 7) { display: none; }
 }
 
-@media (min-width: 48rem) {
-  .word { display: inline-block; vertical-align: top; }
-}
-
 @media (min-width: 64rem) {
+  .hero {
+    display: flex;
+    align-items: center;
+    min-block-size: min(calc(100svh - 5.5rem), 56rem);
+    padding-block: 1.5rem 2.5rem; /* the next section brings its own generous top spacing */
+  }
   .hero__guides { grid-template-columns: repeat(12, minmax(0, 1fr)); }
   .hero__guides span:nth-child(n + 7) { display: block; }
-  .hero__body {
+  .hero__inner {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gutter);
-    align-items: start;
-    margin-block-start: clamp(0.5rem, 0rem + 1vw, 1.5rem);
+    align-items: center;
   }
-  .hero__copy { grid-column: 1 / span 6; padding-block-start: clamp(1rem, 0rem + 3.5vw, 3.5rem); }
-  /* The glass sheet rises into the lower edge of the name, frosting it. */
+  .hero__copy { grid-column: 1 / span 7; }
   .hero__visual {
     grid-column: 8 / span 5;
-    margin-block-start: calc(var(--text-display) * -0.2);
-    max-inline-size: none;
+    inline-size: min(100%, 30rem, calc((100svh - 11rem) * 0.857));
   }
 }
 
@@ -258,17 +273,6 @@
   .tile--md { grid-column: 5 / span 8; }
 }
 
-/* ---------- Education + Skills (two quiet columns) ---------- */
-
-.duo__grid { display: grid; gap: clamp(3rem, 2rem + 3vw, 5rem) var(--gutter); }
-.duo__grid > section { display: flex; flex-direction: column; }
-.duo__grid .empty { flex: 1; }
-@media (min-width: 64rem) {
-  .duo__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  .education { grid-column: 1 / span 6; }
-  .skills { grid-column: 7 / span 6; }
-}
-
 /* ---------- Blog: the paper sheet ---------- */
 
 .blog {
@@ -282,22 +286,10 @@
 }
 .blog .rule { color: var(--line-strong); }
 
-.blog__layout, .blog__empty { display: grid; gap: 3rem var(--gutter); margin-block-start: clamp(2.5rem, 2rem + 2vw, 4.5rem); }
-.blog__recent { display: grid; align-content: start; margin: 0; padding: 0; list-style: none; }
-
-.post__link { display: block; color: inherit; text-decoration: none; }
-.post__cover { aspect-ratio: 16 / 10; border-radius: var(--radius-lg); overflow: hidden; background: var(--paper-200); }
-.post__cover img { inline-size: 100%; block-size: 100%; object-fit: cover; }
-.post__cover-fallback { display: grid; place-items: center; inline-size: 100%; block-size: 100%; color: var(--fg-subtle); }
-.post__meta { display: flex; flex-wrap: wrap; gap: 0.1rem 1rem; color: var(--fg-subtle); font-size: var(--text-meta); line-height: 1.9; }
-.post__category { color: var(--accent); font-weight: 700; }
-.post__title { font-size: var(--text-sub); font-weight: 800; line-height: 1.5; margin-block-start: 0.35rem; }
-.post__excerpt { margin-block-start: 0.75rem; max-inline-size: 36rem; color: var(--fg-muted); }
-.post--featured .post__text { margin-block-start: 1.5rem; }
-.post--featured .post__title { font-size: var(--text-section-md); }
-.post--row { padding-block: 1.5rem; border-block-start: 1px solid var(--line); }
-.post--row .post__title { font-size: 1.1875rem; }
-a.post__link:hover .post__title { color: var(--accent); }
+.blog__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem var(--gutter); }
+.blog__head .section-heading { flex: 1 1 24rem; min-inline-size: 0; }
+.blog__all { flex: none; }
+.blog__empty { display: grid; gap: 3rem var(--gutter); margin-block-start: clamp(2.5rem, 2rem + 2vw, 4.5rem); }
 
 .blog__empty-cover {
   display: grid;
@@ -313,9 +305,7 @@ a.post__link:hover .post__title { color: var(--accent); }
 .blog__empty-title { margin-block-end: 0.5rem; color: var(--fg); font-size: 1.25rem; font-weight: 800; }
 
 @media (min-width: 64rem) {
-  .blog__layout, .blog__empty { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  .blog__layout .post--featured { grid-column: 1 / span 7; }
-  .blog__recent { grid-column: 9 / span 4; }
+  .blog__empty { grid-template-columns: repeat(12, minmax(0, 1fr)); }
   .blog__empty-cover { grid-column: 1 / span 7; aspect-ratio: 16 / 10; }
   .blog__empty-text { grid-column: 9 / span 4; }
 }
@@ -325,7 +315,12 @@ a.post__link:hover .post__title { color: var(--accent); }
 .contact { padding-block-end: 0; }
 .contact__panel { display: grid; gap: clamp(2.5rem, 2rem + 2vw, 4rem); padding: clamp(1.5rem, 1rem + 3vw, 4.5rem); }
 .contact__title { font-size: var(--text-section-lg); font-weight: 800; line-height: 1.3; }
-.contact__text { max-inline-size: 30rem; margin-block-start: 1.25rem; color: var(--fg-muted); }
+.contact__text { max-inline-size: 32rem; margin-block-start: 1.25rem; color: var(--fg-muted); }
+.contact__topics-title { margin-block-start: 2rem; color: var(--fg-subtle); font-size: var(--text-meta); font-weight: 700; }
+.contact__topics { display: grid; gap: 0.5rem; margin: 0.75rem 0 0; padding: 0; list-style: none; }
+.contact__topics li { display: flex; align-items: flex-start; gap: 0.75rem; color: var(--fg-muted); font-size: var(--text-caption); line-height: 1.8; }
+.contact__tick { display: grid; place-items: center; flex: none; inline-size: 1.5rem; block-size: 1.5rem; margin-block-start: 0.15rem; border-radius: 50%; background: color-mix(in oklab, var(--lavender) 16%, transparent); color: var(--lavender); }
+.contact__tick .icon { inline-size: 0.9rem; block-size: 0.9rem; }
 .contact__email {
   display: block;
   inline-size: fit-content;

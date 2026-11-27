@@ -17,7 +17,7 @@
     "test:e2e": "node tests/e2e.mjs"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.2.0",
+    "@astrojs/sitemap": "^3.7.6",
     "@fontsource-variable/vazirmatn": "^5.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "astro": "^5.2.0",

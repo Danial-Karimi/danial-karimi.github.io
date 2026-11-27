@@ -172,24 +172,4 @@
 .empty__title { margin-block-start: 0.75rem; font-size: 1.0625rem; font-weight: 700; }
 .empty__text { max-inline-size: 28rem; color: var(--fg-muted); font-size: var(--text-caption); line-height: 1.9; }
 
-/* ---------- Skill item (renders only when skills are configured) ---------- */
-
-.skill-groups { display: grid; gap: 2.5rem; margin-block-start: 2rem; }
-.skill-group__title { margin-block-end: 0.75rem; color: var(--fg-muted); font-size: var(--text-caption); font-weight: 700; }
-.skill-list { display: grid; margin: 0; padding: 0; list-style: none; }
-.skill { display: flex; align-items: flex-start; gap: 1rem; padding-block: 1rem; border-block-start: 1px solid var(--line); }
-.skill__icon { display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; border: 1px solid var(--line); border-radius: 0.75rem; color: var(--accent); flex: none; }
-.skill__body { flex: 1; min-inline-size: 0; }
-.skill__name { font-weight: 700; }
-.skill__desc { margin-block-start: 0.15rem; color: var(--fg-muted); font-size: var(--text-caption); line-height: 1.85; }
-.skill__level { padding: 0.15rem 0.7rem; border: 1px solid var(--line-strong); border-radius: var(--radius-pill); color: var(--fg-muted); font-size: var(--text-meta); line-height: 1.8; white-space: nowrap; }
-
-/* ---------- Timeline (Education, renders only when entries exist) ---------- */
-
-.timeline { display: grid; gap: 0; margin: 2rem 0 0; padding: 0; list-style: none; }
-.timeline__item { padding-block: 1.25rem; padding-inline-start: 1.5rem; border-inline-start: 1px solid var(--line-strong); position: relative; }
-.timeline__item::before { content: ''; position: absolute; inset-inline-start: -4px; inset-block-start: 1.9rem; inline-size: 7px; block-size: 7px; border-radius: 50%; background: var(--lavender); }
-.timeline__period { color: var(--fg-subtle); font-size: var(--text-meta); }
-.timeline__title { margin-block-start: 0.15rem; font-size: 1.25rem; font-weight: 800; }
-.timeline__program { color: var(--fg-muted); }
-.timeline__desc { margin-block-start: 0.5rem; color: var(--fg-muted); font-size: var(--text-caption); }
+.empty--wide { max-inline-size: 44rem; margin-block-start: 0; }

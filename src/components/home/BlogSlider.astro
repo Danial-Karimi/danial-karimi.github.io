@@ -1,0 +1,80 @@
+---
+import ArticleCard from './ArticleCard.astro';
+import Icon from '@/components/ui/Icon.astro';
+import type { Article } from '@/types/article';
+
+interface Props {
+  articles: Article[];
+}
+
+const { articles } = Astro.props;
+---
+
+<div class="slider" data-slider role="region" aria-roledescription="carousel" aria-label="مطالب بلاگ">
+  <div class="slider__bar">
+    <div class="slider__progress" aria-hidden="true"><span data-slider-bar></span></div>
+    <div class="slider__buttons">
+      <button class="slider__btn" type="button" data-slider-prev aria-label="مطلب قبلی" disabled>
+        <Icon name="chevron-right" />
+      </button>
+      <button class="slider__btn" type="button" data-slider-next aria-label="مطلب بعدی">
+        <Icon name="chevron-left" />
+      </button>
+    </div>
+  </div>
+
+  <ul class="slider__track" role="list" tabindex="0" aria-label="فهرست مطالب؛ با کشیدن یا کلیدهای جهت‌دار حرکت کنید" data-slider-track>
+    {
+      articles.map((article) => (
+        <li class="slide">
+          <ArticleCard article={article} />
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-slider]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-slider-track]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-slider-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-slider-next]');
+    const bar = root.querySelector<HTMLElement>('[data-slider-bar]');
+    if (!track || !prev || !next) return;
+
+    // scrollLeft is 0 → negative in RTL; use magnitudes so one code path serves both directions.
+    const sign = () => (getComputedStyle(track).direction === 'rtl' ? -1 : 1);
+    const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const step = () => {
+      const slide = track.querySelector<HTMLElement>('.slide');
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return slide ? slide.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
+    };
+
+    const go = (direction: 1 | -1) =>
+      track.scrollBy({ left: sign() * direction * step(), behavior: reduceMotion() ? 'auto' : 'smooth' });
+
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const max = track.scrollWidth - track.clientWidth;
+      const pos = Math.abs(track.scrollLeft);
+      const scrollable = max > 2;
+      root.dataset.scrollable = String(scrollable);
+      prev.disabled = !scrollable || pos <= 2;
+      next.disabled = !scrollable || pos >= max - 2;
+      if (bar) bar.style.setProperty('--progress', String(scrollable ? Math.min(1, pos / max) : 1));
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    track.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    update();
+  });
+</script>

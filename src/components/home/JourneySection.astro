@@ -1,0 +1,56 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { journeyIntro, journeyStages } from '@/data/journey';
+import { mulberry32 } from '@/utils/embedding-field';
+import { toFaDigits } from '@/utils/format';
+
+const accents = ['blue', 'violet', 'cyan', 'lavender', 'blue'] as const;
+const r1 = (n: number) => Math.round(n * 10) / 10;
+
+// Each stage gets a tiny cluster of points. The cluster grows from stage to stage and the last one is
+// inspected by a lens — the same visual language as the hero figure, telling the story without any text.
+const glyphs = journeyStages.map((_, index) => {
+  const rand = mulberry32(211 + index * 31);
+  const count = 4 + index * 4;
+  const spread = 10 + index * 4.5;
+  return Array.from({ length: count }, () => {
+    const angle = rand() * Math.PI * 2;
+    const radius = Math.sqrt(rand()) * spread;
+    return { x: r1(60 + Math.cos(angle) * radius * 1.35), y: r1(34 + Math.sin(angle) * radius), r: r1(2 + rand() * 1.8) };
+  });
+});
+const lastIndex = journeyStages.length - 1;
+---
+
+<section id="journey" class="section journey" aria-labelledby="journey-title" data-nav-section="activities">
+  <div class="container">
+    <div class="rule" data-reveal-rule aria-hidden="true"></div>
+    <SectionHeading id="journey-title" size="lg" title={journeyIntro.title} lede={journeyIntro.lede} />
+
+    <ol class="journey__list" role="list">
+      {
+        journeyStages.map((stage, index) => (
+          <li
+            class="stage"
+            data-accent={accents[index % accents.length]}
+            data-reveal
+            style={`--i:${index};--step:${index}`}
+          >
+            <span class="stage__num" aria-hidden="true">{toFaDigits(index + 1)}</span>
+            <div class="stage__main">
+              <h3 class="stage__title">{stage.title}</h3>
+              <p class="stage__label" dir="ltr" lang="en">{stage.label}</p>
+            </div>
+            <p class="stage__desc">{stage.description}</p>
+            <svg class="stage__glyph" viewBox="0 0 120 68" aria-hidden="true" focusable="false">
+              {glyphs[index]?.map((p) => <circle cx={p.x} cy={p.y} r={p.r} />)}
+              {index === lastIndex && <circle class="stage__lens" cx="60" cy="34" r="30" />}
+            </svg>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="journey__note">{journeyIntro.note}</p>
+  </div>
+</section>
